@@ -1,0 +1,12 @@
+target/
+.git/
+*.log
+hs_err_pid*.log
+.idea/
+.vscode/
+.env
+.env.*
+secrets/
+*.p12
+*.pfx
+*.jks

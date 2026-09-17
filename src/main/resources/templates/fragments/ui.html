@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- ==========================================
+     Reusable UI Components (Thymeleaf Fragments)
+     ========================================== -->
+
+<!-- Alert: type = success|error|info|warning -->
+<div th:fragment="alert(type, message)" th:if="${message}"
+     th:class="'alert alert-' + ${type}">
+    <p th:text="${message}"></p>
+</div>
+
+<!-- Document status badge -->
+<span th:fragment="docStatus(status)" th:switch="${status.name()}" th:remove="tag">
+    <span th:case="'PENDING'" class="badge badge-warning">Pendente</span>
+    <span th:case="'COMPLETED'" class="badge badge-success">Concluido</span>
+    <span th:case="'CANCELLED'" class="badge badge-danger">Cancelado</span>
+    <span th:case="'EXPIRED'" class="badge badge-muted">Expirado</span>
+    <span th:case="'DRAFT'" class="badge badge-muted">Rascunho</span>
+</span>
+
+<!-- Signature request status badge -->
+<span th:fragment="reqStatus(status, reason)" th:switch="${status.name()}" th:remove="tag">
+    <span th:case="'PENDING'" class="badge badge-warning">Pendente</span>
+    <span th:case="'SIGNED'" class="badge badge-success">Assinado</span>
+    <span th:case="'REJECTED'" class="badge badge-danger" th:title="${reason}">Recusado</span>
+    <span th:case="'EXPIRED'" class="badge badge-muted">Expirado</span>
+</span>
+
+<!-- Info item (label + value) -->
+<div th:fragment="infoItem(label, value)" class="info-item">
+    <label th:text="${label}">Label</label>
+    <span th:text="${value}" class="font-medium">Value</span>
+</div>
+
+<!-- Empty state -->
+<div th:fragment="empty(icon, message)" class="empty-state">
+    <div class="empty-state-icon" th:utext="${icon}"></div>
+    <p th:text="${message}"></p>
+</div>
+
+<!-- Page header (title only) -->
+<div th:fragment="pageTitle(title)" class="mb-6">
+    <h1 class="text-2xl font-bold m-0" th:text="${title}"></h1>
+</div>
+
+<!-- Page header with action button -->
+<div th:fragment="pageTitleWithAction(title, actionText, actionUrl)" class="flex items-center justify-between flex-wrap gap-4 mb-6">
+    <h1 class="text-2xl font-bold m-0" th:text="${title}"></h1>
+    <a th:href="${actionUrl}" class="btn btn-primary" th:text="${actionText}"></a>
+</div>
+
+</html>

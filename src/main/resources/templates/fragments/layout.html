@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Main layout fragment with sidebar -->
+<body th:fragment="page(pageTitle, activeMenu, content)">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                primary: { DEFAULT: '#E5A100', hover: '#CC8F00', light: '#FFF8E7' },
+                dark: { DEFAULT: '#1a1a1a', light: '#2d2d2d', muted: '#4a4a4a' },
+                surface: '#f5f5f0',
+                border: '#e5e5e0',
+            }
+        }
+    }
+}
+</script>
+<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+<link th:href="@{/css/style.css}" rel="stylesheet">
+
+<div class="flex min-h-screen bg-surface">
+
+    <!-- Mobile toggle -->
+    <button class="fixed top-4 left-4 z-[200] bg-dark text-white rounded-lg w-10 h-10 text-xl cursor-pointer flex items-center justify-center border-none md:hidden" onclick="toggleSidebar()" type="button">
+        <i class="ph ph-list"></i>
+    </button>
+    <div class="hidden fixed inset-0 bg-black/50 z-[99]" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <nav class="w-60 bg-dark text-white fixed top-0 left-0 bottom-0 flex flex-col z-[100] transition-transform max-md:-translate-x-full" id="sidebar">
+        <div class="p-5 border-b border-dark-light">
+            <a th:href="@{/}" class="block no-underline">
+                <div class="bg-white rounded-lg p-3 mb-2 mx-auto w-fit">
+                    <img th:src="@{/images/utfpr_logo.png}" alt="UTFPR" class="h-10">
+                </div>
+                <span class="block text-[0.65rem] text-primary font-semibold tracking-widest text-center uppercase">Assinador Digital</span>
+            </a>
+        </div>
+
+        <div class="flex-1 py-4 overflow-y-auto">
+            <a th:href="@{/sign-pdf}"
+               th:classappend="${activeMenu == 'sign'} ? 'text-white bg-dark-light !border-l-primary' : ''"
+               class="flex items-center gap-3 px-6 py-3 text-white/70 text-sm font-medium border-l-[3px] border-l-transparent transition-all hover:text-white hover:bg-dark-light no-underline">
+                <i class="ph ph-signature text-xl w-6 text-center"></i> Assinar PDF
+            </a>
+            <a th:href="@{/documents}"
+               th:classappend="${activeMenu == 'documents'} ? 'text-white bg-dark-light !border-l-primary' : ''"
+               class="flex items-center gap-3 px-6 py-3 text-white/70 text-sm font-medium border-l-[3px] border-l-transparent transition-all hover:text-white hover:bg-dark-light no-underline">
+                <i class="ph ph-file-text text-xl w-6 text-center"></i> Documentos
+            </a>
+            <a th:href="@{/documents/new}"
+               th:classappend="${activeMenu == 'new-document'} ? 'text-white bg-dark-light !border-l-primary' : ''"
+               class="flex items-center gap-3 px-6 py-3 text-white/70 text-sm font-medium border-l-[3px] border-l-transparent transition-all hover:text-white hover:bg-dark-light no-underline">
+                <i class="ph ph-plus-circle text-xl w-6 text-center"></i> Novo Documento
+            </a>
+            <a th:href="@{/validator}"
+               th:classappend="${activeMenu == 'validator'} ? 'text-white bg-dark-light !border-l-primary' : ''"
+               class="flex items-center gap-3 px-6 py-3 text-white/70 text-sm font-medium border-l-[3px] border-l-transparent transition-all hover:text-white hover:bg-dark-light no-underline">
+                <i class="ph ph-check-circle text-xl w-6 text-center"></i> Validar Assinatura
+            </a>
+            <a th:href="@{/account}"
+               th:classappend="${activeMenu == 'account'} ? 'text-white bg-dark-light !border-l-primary' : ''"
+               class="flex items-center gap-3 px-6 py-3 text-white/70 text-sm font-medium border-l-[3px] border-l-transparent transition-all hover:text-white hover:bg-dark-light no-underline">
+                <i class="ph ph-user-circle text-xl w-6 text-center"></i> Minha Conta
+            </a>
+        </div>
+
+        <div class="px-5 py-4 border-t border-dark-light">
+            <div class="flex items-center gap-3" th:if="${session.userName != null}">
+                <div class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center font-bold text-sm shrink-0"
+                     th:text="${session.userName != null ? session.userName.substring(0,1).toUpperCase() : '?'}"></div>
+                <div class="overflow-hidden flex-1">
+                    <div class="text-sm font-semibold truncate" th:text="${session.userName}">Usuario</div>
+                    <div class="text-xs text-white/40 truncate" th:text="${session.userEmail}">email@email.com</div>
+                </div>
+                <a th:href="@{/logout}" class="text-white/30 hover:text-red-400 transition-colors" title="Sair">
+                    <i class="ph ph-sign-out text-lg"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="flex-1 ml-60 p-8 min-h-screen max-md:ml-0 max-md:p-5 max-md:pt-16">
+        <th:block th:replace="${content}" />
+    </main>
+
+</div>
+
+<!-- 2FA Modal (once per session) -->
+<div th:if="${session.show2FAModal}" id="twoFactorModal" class="modal-backdrop">
+    <div class="modal-content">
+        <div class="px-8 py-6 bg-dark text-white rounded-t-xl">
+            <h2 class="m-0 text-white text-xl font-semibold">Proteja sua conta</h2>
+        </div>
+        <div class="px-8 py-6">
+            <p class="m-0 mb-3 leading-relaxed text-sm">Recomendamos que voce ative a <strong>Autenticacao de Dois Fatores (2FA)</strong> para maior seguranca.</p>
+            <div class="mt-4 flex items-center gap-2">
+                <input type="checkbox" id="dontShowAgain" class="w-4 h-4 cursor-pointer accent-primary">
+                <label for="dontShowAgain" class="m-0 font-normal cursor-pointer text-sm text-gray-500">Nao mostrar novamente</label>
+            </div>
+        </div>
+        <div class="px-8 py-4 bg-surface flex gap-3 justify-end rounded-b-xl">
+            <button type="button" onclick="close2FAModal()" class="btn btn-secondary">Fechar</button>
+            <a th:href="@{/setup-2fa}" class="btn btn-primary">Ativar 2FA</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('max-md:translate-x-0');
+    const bd = document.getElementById('sidebarBackdrop');
+    bd.classList.toggle('hidden');
+    bd.classList.toggle('block');
+}
+function close2FAModal() {
+    var dontShowAgain = document.getElementById('dontShowAgain').checked;
+    document.getElementById('twoFactorModal').style.display = 'none';
+    fetch('/hide-2fa-modal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'hidePermanently=' + (dontShowAgain ? 'true' : 'false')
+    });
+}
+window.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('twoFactorModal');
+    if (modal) modal.style.display = 'flex';
+});
+</script>
+</body>
+</html>

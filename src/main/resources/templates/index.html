@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinar PDF</title>
+</head>
+<th:block th:replace="~{fragments/layout :: page('Assinar PDF', 'sign', ~{::pageContent})}">
+<div th:fragment="pageContent">
+
+    <div th:replace="~{fragments/ui :: pageTitle('Assinar PDF')}"></div>
+
+    <div th:replace="~{fragments/ui :: alert('success', ${success})}"></div>
+    <div th:replace="~{fragments/ui :: alert('info', ${info})}"></div>
+    <div th:replace="~{fragments/ui :: alert('error', ${error})}"></div>
+
+    <div class="card">
+        <p class="text-gray-500 text-sm mb-4">Atalho para assinar um PDF rapidamente: o documento será criado na sua conta com você como único assinante.</p>
+        <form method="POST" enctype="multipart/form-data" th:action="@{/sign-pdf}">
+            <div class="form-field">
+                <label for="arquivo" class="form-label">Arquivo PDF:</label>
+                <input type="file" id="arquivo" name="arquivo" accept="application/pdf" required class="form-file" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Assinar</button>
+        </form>
+    </div>
+
+</div>
+</th:block>
+</html>

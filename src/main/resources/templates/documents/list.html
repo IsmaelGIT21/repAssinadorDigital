@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentos</title>
+</head>
+<th:block th:replace="~{fragments/layout :: page('Documentos', 'documents', ~{::pageContent})}">
+<div th:fragment="pageContent">
+
+    <div th:replace="~{fragments/ui :: pageTitleWithAction('Documentos', '+ Novo Documento', @{/documents/new})}"></div>
+
+    <div th:replace="~{fragments/ui :: alert('success', ${success})}"></div>
+    <div th:replace="~{fragments/ui :: alert('error', ${error})}"></div>
+
+    <!-- Filter tabs -->
+    <div class="flex flex-wrap gap-2 mb-4">
+        <a th:href="@{/documents(filter='all')}"
+           th:classappend="${filter == 'all'} ? ' btn-primary' : ' btn-outline'"
+           class="btn btn-sm">Todos</a>
+        <a th:href="@{/documents(filter='pending')}"
+           th:classappend="${filter == 'pending'} ? ' btn-primary' : ' btn-outline'"
+           class="btn btn-sm">
+            Pendentes de Assinatura
+            <span th:if="${pendingCount > 0}" class="badge badge-warning ml-1" th:text="${pendingCount}">0</span>
+        </a>
+        <a th:href="@{/documents(filter='received')}"
+           th:classappend="${filter == 'received'} ? ' btn-primary' : ' btn-outline'"
+           class="btn btn-sm">Recebidos</a>
+        <a th:href="@{/documents(filter='sent')}"
+           th:classappend="${filter == 'sent'} ? ' btn-primary' : ' btn-outline'"
+           class="btn btn-sm">Enviados</a>
+        <a th:href="@{/documents(filter='signed')}"
+           th:classappend="${filter == 'signed'} ? ' btn-primary' : ' btn-outline'"
+           class="btn btn-sm">Assinados</a>
+    </div>
+
+    <div class="card">
+        <div th:if="${documents == null || documents.isEmpty()}">
+            <div th:replace="~{fragments/ui :: empty('<i class=\'ph ph-folder-open text-primary\'></i>', 'Nenhum documento encontrado.')}"></div>
+            <div class="text-center">
+                <a th:href="@{/documents/new}" class="btn btn-primary">Criar documento</a>
+            </div>
+        </div>
+
+        <div th:if="${documents != null && !documents.isEmpty()}" class="overflow-x-auto">
+            <table class="w-full border-collapse text-sm">
+                <thead>
+                    <tr>
+                        <th class="th-cell">Documento</th>
+                        <th class="th-cell">Papel</th>
+                        <th class="th-cell">Status</th>
+                        <th class="th-cell">Progresso</th>
+                        <th class="th-cell">Criado em</th>
+                        <th class="th-cell"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="doc : ${documents}" class="hover:bg-primary-light transition-colors">
+                        <td class="td-cell">
+                            <a th:href="@{/documents/{id}(id=${doc.id})}" th:text="${doc.title}" class="font-semibold text-primary-hover hover:underline">documento.pdf</a>
+                            <div class="text-xs text-gray-500" th:if="${!doc.userIsOwner}" th:text="'Enviado por ' + ${doc.ownerName}">Enviado por Fulano</div>
+                        </td>
+                        <td class="td-cell">
+                            <div class="flex gap-1 flex-wrap">
+                                <span th:if="${doc.userIsOwner}" class="badge badge-info">Criador</span>
+                                <span th:if="${doc.userIsSigner}" class="badge badge-warning">Assinante</span>
+                            </div>
+                        </td>
+                        <td class="td-cell">
+                            <th:block th:replace="~{fragments/ui :: docStatus(${doc.status})}"></th:block>
+                        </td>
+                        <td class="td-cell" th:text="${doc.signedCount} + '/' + ${doc.totalSigners}">0/2</td>
+                        <td class="td-cell" th:text="${#temporals.format(doc.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                        <td class="td-cell">
+                            <div class="flex gap-2 flex-wrap">
+                                <a th:if="${doc.userPendingToken != null}"
+                                   th:href="@{/sign(token=${doc.userPendingToken})}"
+                                   class="btn btn-primary btn-sm">Assinar</a>
+                                <a th:href="@{/documents/{id}(id=${doc.id})}" class="btn btn-outline btn-sm">Detalhes</a>
+                                <a th:if="${doc.status.name() == 'COMPLETED' && !doc.filesRemoved}"
+                                   th:href="@{/documents/{id}/download(id=${doc.id})}" class="btn btn-dark btn-sm">Baixar</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</th:block>
+</html>

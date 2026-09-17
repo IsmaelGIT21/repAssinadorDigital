@@ -1,0 +1,53 @@
+services:
+  mongodb:
+    image: mongo:8.0.15
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-root}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE:-digital-signature}
+    volumes:
+      - mongodb-data:/data/db
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: digital-signature-app
+    depends_on:
+      - mongodb
+    ports:
+      - "8080:8080"
+      - "35729:35729"
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: ${MONGODB_DATABASE:-digital-signature}
+      SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: admin
+      SPRING_DATA_MONGODB_USERNAME: ${MONGODB_USERNAME:-root}
+      SPRING_DATA_MONGODB_PASSWORD: ${MONGODB_PASSWORD:-root}
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: "true"
+      TESSERACT_DATAPATH: /usr/share/tesseract-ocr/5/tessdata
+      CERTIFICATE_PATH: /run/secrets/certificado.p12
+      CERTIFICATE_PASSWORD: ${CERTIFICATE_PASSWORD:-}
+      CERTIFICATE_COMMON_NAME: ${CERTIFICATE_COMMON_NAME:-Digital Signature Platform}
+      CERTIFICATE_VALIDITY_TIME: ${CERTIFICATE_VALIDITY_TIME:-1440}
+      CERTIFICATE_LOCATION: ${CERTIFICATE_LOCATION:-BR}
+      MAIL_HOST: ${MAIL_HOST:-smtp.example.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-noreply@example.com}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      TZ: America/Sao_Paulo
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+      - ./secrets:/run/secrets:ro
+
+volumes:
+  mongodb-data:
+  maven-repo:

@@ -1,0 +1,240 @@
+/* ============================================
+   COMPONENT CLASSES
+   Reusable CSS classes for Tailwind CDN projects
+   ============================================ */
+
+/* --- Buttons --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 150ms ease;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-decoration: none; }
+.btn:active { transform: translateY(0); box-shadow: none; }
+
+.btn-primary { background: #E5A100; color: #1a1a1a; }
+.btn-primary:hover { background: #CC8F00; }
+
+.btn-dark { background: #1a1a1a; color: white; }
+.btn-dark:hover { background: #2d2d2d; }
+
+.btn-secondary { background: #e5e5e0; color: #4a4a4a; }
+.btn-secondary:hover { background: #d5d5d0; }
+
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+
+.btn-outline { background: transparent; color: #6b7280; border: 1px solid #e5e5e0; }
+.btn-outline:hover { border-color: #E5A100; color: #CC8F00; background: #FFF8E7; }
+
+.btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+.btn-lg { padding: 0.75rem 1.5rem; font-size: 1rem; }
+.btn-full { width: 100%; }
+
+/* --- Form Elements --- */
+.form-input {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #e5e5e0;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    color: #1a1a1a;
+    background: white;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.form-input:focus { border-color: #E5A100; outline: none; box-shadow: 0 0 0 3px rgba(229,161,0,0.12); }
+
+.form-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.form-file {
+    width: 100%;
+    padding: 1rem;
+    border: 2px dashed #d5d5d0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background: #fafaf8;
+    font-size: 0.875rem;
+    transition: border-color 150ms, background 150ms;
+}
+.form-file:hover { border-color: #E5A100; background: #FFF8E7; }
+
+.form-field { margin-bottom: 1.25rem; }
+
+/* --- Cards --- */
+.card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    border: 1px solid #ebebeb;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #E5A100;
+}
+.card-header h2 { margin: 0; font-size: 1rem; font-weight: 700; color: #1a1a1a; letter-spacing: -0.01em; }
+
+/* --- Alerts --- */
+.alert {
+    padding: 0.875rem 1.125rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.25rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-left: 4px solid;
+    animation: slideIn 0.3s ease-out;
+}
+.alert p { margin: 0; }
+.alert a { color: inherit; text-decoration: underline; font-weight: 700; }
+
+.alert-success { background: #f0fdf4; border-color: #22c55e; color: #15803d; }
+.alert-error { background: #fef2f2; border-color: #ef4444; color: #dc2626; }
+.alert-info { background: #eff6ff; border-color: #3b82f6; color: #2563eb; }
+.alert-warning { background: #FFF8E7; border-color: #E5A100; color: #92400e; }
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Badges --- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.badge-warning { background: #FFF8E7; color: #92400e; }
+.badge-success { background: #f0fdf4; color: #16a34a; }
+.badge-danger { background: #fef2f2; color: #dc2626; }
+.badge-muted { background: #f3f4f6; color: #9ca3af; }
+.badge-info { background: #eff6ff; color: #2563eb; }
+
+/* --- Tables --- */
+.th-cell {
+    text-align: left;
+    padding: 0.625rem 1rem;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    border-bottom: 2px solid #f0f0f0;
+    white-space: nowrap;
+}
+
+.td-cell {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: middle;
+    color: #4a4a4a;
+}
+tr:last-child .td-cell { border-bottom: none; }
+
+/* --- Info Items (profile, detail) --- */
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: #fafaf8;
+    border-radius: 0.5rem;
+    border: 1px solid #f0f0ed;
+}
+.info-item label { font-weight: 600; color: #9ca3af; font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.03em; }
+.info-item span { font-weight: 500; color: #1a1a1a; font-size: 0.9rem; }
+
+/* --- Progress Bar --- */
+.progress-bar { height: 6px; background: #f0f0ed; border-radius: 9999px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); border-radius: 9999px; transition: width 0.6s ease; }
+
+/* --- Empty State --- */
+.empty-state { text-align: center; padding: 3rem 1.5rem; color: #d1d5db; }
+.empty-state-icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
+.empty-state p { margin: 0.5rem 0; font-size: 0.875rem; color: #9ca3af; }
+
+/* --- Switch/Help text (auth pages) --- */
+.switch-text { margin-top: 1.25rem; font-size: 0.85rem; color: #6b7280; text-align: center; }
+.switch-text a { color: #CC8F00; font-weight: 600; text-decoration: none; }
+.switch-text a:hover { text-decoration: underline; }
+.help-text { margin-top: 1.25rem; text-align: center; color: #9ca3af; font-size: 0.8rem; line-height: 1.6; }
+
+/* --- 2FA Code Input --- */
+.code-input {
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: 0.5rem;
+    font-weight: 700;
+    padding: 0.75rem;
+}
+
+/* --- QR / 2FA Setup --- */
+.qr-section { background: #fafaf8; border-radius: 0.75rem; padding: 1.5rem; margin: 1.25rem 0; text-align: center; border: 1px solid #f0f0ed; }
+.qr-code-container { background: white; padding: 1.5rem; border-radius: 0.75rem; display: inline-block; margin: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.manual-entry { margin-top: 1rem; padding: 0.875rem; background: #FFF8E7; border: 1px solid #f0e0b0; border-radius: 0.5rem; font-size: 0.85rem; }
+.secret-code { display: block; font-family: 'Courier New', monospace; font-size: 0.85rem; background: white; padding: 0.5rem 0.75rem; border-radius: 0.375rem; margin-top: 0.5rem; word-break: break-all; font-weight: 700; border: 1px solid #e5e5e0; color: #1a1a1a; }
+
+/* --- Info Box --- */
+.info-box { background: #FFF8E7; border: 1px solid #f0e0b0; border-left: 4px solid #E5A100; border-radius: 0.5rem; padding: 1rem 1.25rem; margin-bottom: 1.25rem; font-size: 0.875rem; color: #6b5a1a; }
+.info-box p { margin: 0.25rem 0; }
+.info-box ul { margin: 0.5rem 0; padding-left: 1.25rem; }
+.info-box strong { color: #1a1a1a; }
+
+/* --- PDF Preview --- */
+.pdf-preview-wrapper { position: relative; display: inline-block; background: #f5f5f0; border-radius: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: auto; border: 1px solid #e5e5e0; max-width: 100%; }
+#pdfCanvas { display: block; background: white; border-radius: 0.5rem; }
+
+.signature-overlay--interactive { position: absolute; cursor: grab; user-select: none; pointer-events: auto; }
+.signature-overlay--interactive::after { content: ""; position: absolute; inset: 0; border: 2px dotted #E5A100; border-radius: 6pt; pointer-events: none; transition: opacity 150ms; }
+.signature-overlay--interactive.dragging::after, .signature-overlay.dragging::after { opacity: 0.75; border-color: #CC8F00; }
+.signature-overlay.dragging { cursor: grabbing; }
+
+/* Page nav buttons (PDF viewer) */
+.page-nav-btn { min-width: 2.25rem; min-height: 2.25rem; display: inline-flex; align-items: center; justify-content: center; padding: 0.375rem 0.625rem; border-radius: 0.5rem; background: white; border: 1px solid #e5e5e0; color: #6b7280; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 150ms; }
+.page-nav-btn:hover:not(:disabled) { border-color: #E5A100; color: #CC8F00; background: #FFF8E7; }
+.page-nav-btn.active { background: #E5A100; border-color: #E5A100; color: #1a1a1a; }
+.page-nav-btn:disabled { opacity: 0.25 !important; cursor: not-allowed !important; pointer-events: none; }
+
+/* --- Modal --- */
+.modal-backdrop { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; }
+.modal-content { background: white; margin: auto; border-radius: 0.75rem; box-shadow: 0 25px 50px rgba(0,0,0,0.15); width: 90%; max-width: 460px; animation: modalSlideIn 0.3s ease-out; overflow: hidden; }
+@keyframes modalSlideIn { from { transform: translateY(-30px) scale(0.97); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .info-item { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+}
+
+/* --- Validation Result (validator page) --- */
+.validation-result { margin-top: 1.5rem; padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid; }
+.validation-result.valid { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+.validation-result.invalid { background: #fef2f2; color: #dc2626; border-color: #fecaca; }

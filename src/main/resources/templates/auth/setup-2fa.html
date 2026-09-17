@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar 2FA</title>
+</head>
+<th:block th:replace="~{fragments/layout :: page('Configurar 2FA', 'account', ~{::pageContent})}">
+<div th:fragment="pageContent">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-sm text-gray-400 mb-6">
+        <a th:href="@{/account}" class="hover:text-primary no-underline">Minha Conta</a>
+        <i class="ph ph-caret-right text-xs"></i>
+        <span class="text-gray-600 font-medium">Configurar 2FA</span>
+    </div>
+
+    <div th:replace="~{fragments/ui :: alert('error', ${error})}"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Left: QR Code -->
+        <div class="card">
+            <div class="card-header"><h2>1. Escaneie o QR Code</h2></div>
+            <p class="text-sm text-gray-500 mb-4">Use um aplicativo autenticador como Google Authenticator, Microsoft Authenticator ou Authy.</p>
+            <div class="flex justify-center">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                    <img th:src="'data:image/png;base64,' + ${qrCode}" alt="QR Code 2FA" class="w-48 h-48 rounded-lg">
+                </div>
+            </div>
+            <details class="mt-4">
+                <summary class="cursor-pointer text-sm text-gray-500 hover:text-primary">Não consegue escanear? Insira manualmente</summary>
+                <div class="mt-2 p-3 bg-surface rounded-lg border border-gray-100">
+                    <code class="secret-code" th:text="${secret}">SECRET_KEY</code>
+                </div>
+            </details>
+        </div>
+
+        <!-- Right: Code input -->
+        <div class="card">
+            <div class="card-header"><h2>2. Confirme o código</h2></div>
+            <p class="text-sm text-gray-500 mb-4">Digite o código de 6 dígitos exibido no seu aplicativo autenticador.</p>
+
+            <form th:action="@{/setup-2fa}" th:object="${validationDTO}" method="post">
+                <div class="form-field">
+                    <label class="form-label">Código de verificação</label>
+                    <input type="text" id="code" th:field="*{code}" placeholder="000000"
+                           maxlength="6" pattern="\d{6}" class="form-input code-input" required autofocus>
+                    <span th:if="${#fields.hasErrors('code')}" th:errors="*{code}" class="text-red-500 text-xs mt-1 block font-medium"></span>
+                </div>
+                <div class="flex gap-3 mt-4">
+                    <button type="submit" class="btn btn-primary flex-1">Ativar 2FA</button>
+                </div>
+            </form>
+
+            <a th:href="@{/account}" class="block text-center text-sm text-gray-400 hover:text-gray-600 mt-4 no-underline">Fazer isso mais tarde</a>
+        </div>
+
+    </div>
+
+</div>
+</th:block>
+</html>
