@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta</title>
+</head>
+<th:block th:replace="~{fragments/layout :: page('Minha Conta', 'account', ~{::pageContent})}">
+<div th:fragment="pageContent">
+
+    <div th:replace="~{fragments/ui :: pageTitle('Minha Conta')}"></div>
+
+    <div th:replace="~{fragments/ui :: alert('success', ${success})}"></div>
+    <div th:replace="~{fragments/ui :: alert('error', ${error})}"></div>
+
+    <!-- User Information -->
+    <div class="card">
+        <div class="card-header"><h2>Dados Verificados</h2></div>
+        <p class="text-gray-400 text-xs mb-4">Dados extraidos da CNH Digital e verificados no cadastro.</p>
+        <div class="flex flex-col gap-3">
+            <div th:replace="~{fragments/ui :: infoItem('Nome', ${user.name})}"></div>
+            <div th:replace="~{fragments/ui :: infoItem('CPF', ${maskedCpf})}"></div>
+            <div th:replace="~{fragments/ui :: infoItem('Email', ${user.email})}"></div>
+            <div th:replace="~{fragments/ui :: infoItem('Cadastrado em', ${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')})}"></div>
+        </div>
+    </div>
+
+    <!-- 2FA -->
+    <div class="card">
+        <div class="card-header"><h2>Autenticacao de Dois Fatores (2FA)</h2></div>
+
+        <div class="mb-4">
+            <div th:if="${twoFactorEnabled}" class="flex items-center gap-4 px-5 py-4 rounded-lg border-l-4 border-l-green-500 bg-white">
+                <div class="text-2xl text-green-500"><i class="ph ph-check-circle"></i></div>
+                <div>
+                    <strong class="block mb-1">2FA Ativado</strong>
+                    <p class="m-0 text-gray-500 text-sm">Sua conta esta protegida com autenticacao de dois fatores.</p>
+                </div>
+            </div>
+            <div th:unless="${twoFactorEnabled}" class="flex items-center gap-4 px-5 py-4 rounded-lg border-l-4 border-l-primary bg-white">
+                <div class="text-2xl text-primary"><i class="ph ph-warning"></i></div>
+                <div>
+                    <strong class="block mb-1">2FA Desativado</strong>
+                    <p class="m-0 text-gray-500 text-sm">Recomendamos ativar para maior seguranca.</p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div th:if="${twoFactorEnabled}">
+                <form th:action="@{/disable-2fa}" method="post"
+                    onsubmit="return confirm('Tem certeza que deseja desabilitar o 2FA?');">
+                    <button type="submit" class="btn btn-danger">Desabilitar 2FA</button>
+                </form>
+            </div>
+            <div th:unless="${twoFactorEnabled}">
+                <a th:href="@{/setup-2fa}" class="btn btn-primary">Ativar 2FA</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</th:block>
+</html>

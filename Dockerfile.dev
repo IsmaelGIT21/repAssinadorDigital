@@ -1,0 +1,20 @@
+FROM maven:3.9-eclipse-temurin-17
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      tesseract-ocr \
+      tesseract-ocr-por \
+      libtesseract-dev \
+      libleptonica-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+
+WORKDIR /app
+
+# Pre-cache dependencies
+COPY pom.xml ./
+RUN mvn -B -q dependency:go-offline || true
+
+EXPOSE 8080 35729
+
+CMD ["mvn", "-q", "spring-boot:run", "-Dspring-boot.run.fork=false"]
