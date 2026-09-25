@@ -2,15 +2,146 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Enviar PDF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinar PDF</title>
+    <style>
+        /* Configurações Globais / Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fcfbfa; /* Fundo levemente off-white */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Título Principal */
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        /* Card Principal */
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #f2f0eb;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Atalho / Texto de Apoio */
+        .helper-text {
+            font-size: 14px;
+            color: #a0a0a0;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        /* Grupo do Input de Arquivo */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #505050;
+            margin-bottom: 10px;
+        }
+
+        /* Área de Upload Estilizada */
+        .file-upload-wrapper {
+            border: 1px dashed #cccccc;
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            background-color: #fafafa;
+        }
+
+        /* Customização do input de arquivo real */
+        .file-upload-wrapper input[type="file"] {
+            font-size: 14px;
+            color: #505050;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        /* Customizando o visual do botão interno do input (opcional/nativo) */
+        .file-upload-wrapper input[type="file"]::file-selector-button {
+            background-color: #efefef;
+            border: 1px solid #cccccc;
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #333333;
+        }
+
+        .file-upload-wrapper input[type="file"]::file-selector-button:hover {
+            background-color: #e5e5e5;
+        }
+
+        /* Botão de Ação Laranja */
+        .btn-submit {
+            width: 100%;
+            background-color: #dc9700; /* Tom de laranja/ouro da imagem */
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #c48600;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Enviar PDF para assinatura</h1>
+    <div class="container">
+        <!-- Título da Seção -->
+        <h1 class="page-title">Assinar PDF</h1>
 
-    <p>Selecione um arquivo PDF:</p>
+        <!-- Card do Formulário -->
+        <div class="card">
+            <p class="helper-text">
+                Atalho para assinar um PDF rapidamente: o documento será criado na sua conta com você como único assinante.
+            </p>
 
-    <input type="file">
+            <form action="#" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label" for="pdf-file">Arquivo PDF:</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="pdf-file" name="pdf-file" accept=".pdf" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Assinar</button>
+            </form>
+        </div>
+    </div>
 
 </body>
 </html>
