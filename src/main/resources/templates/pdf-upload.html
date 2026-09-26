@@ -1,147 +1,209 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assinar PDF</title>
     <style>
-        /* Configurações Globais / Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-        body {
-            background-color: #fcfbfa; /* Fundo levemente off-white */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
-        }
+      body {
+        background-color: #fcfbfa;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+      }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
+      .container {
+        width: 100%;
+        max-width: 600px;
+      }
 
-        /* Título Principal */
-        .page-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #000000;
-            margin-bottom: 20px;
-            text-align: left;
-        }
+      .page-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #000000;
+        margin-bottom: 20px;
+        text-align: left;
+      }
 
-        /* Card Principal */
-        .card {
-            background-color: #ffffff;
-            border: 1px solid #f2f0eb;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-        }
+      .card {
+        background-color: #ffffff;
+        border: 1px solid #f2f0eb;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      }
 
-        /* Atalho / Texto de Apoio */
-        .helper-text {
-            font-size: 14px;
-            color: #a0a0a0;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
+      .helper-text {
+        font-size: 14px;
+        color: #a0a0a0;
+        line-height: 1.5;
+        margin-bottom: 25px;
+      }
 
-        /* Grupo do Input de Arquivo */
-        .form-group {
-            margin-bottom: 25px;
-        }
+      .form-group {
+        margin-bottom: 25px;
+      }
 
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #505050;
-            margin-bottom: 10px;
-        }
+      .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #505050;
+        margin-bottom: 10px;
+      }
 
-        /* Área de Upload Estilizada */
-        .file-upload-wrapper {
-            border: 1px dashed #cccccc;
-            border-radius: 6px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            background-color: #fafafa;
-        }
+      .file-upload-wrapper {
+        border: 1px dashed #cccccc;
+        border-radius: 6px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        background-color: #fafafa;
+      }
 
-        /* Customização do input de arquivo real */
-        .file-upload-wrapper input[type="file"] {
-            font-size: 14px;
-            color: #505050;
-            width: 100%;
-            cursor: pointer;
-        }
+      .file-upload-wrapper input[type="file"] {
+        font-size: 14px;
+        color: #505050;
+        width: 100%;
+        cursor: pointer;
+      }
 
-        /* Customizando o visual do botão interno do input (opcional/nativo) */
-        .file-upload-wrapper input[type="file"]::file-selector-button {
-            background-color: #efefef;
-            border: 1px solid #cccccc;
-            padding: 6px 12px;
-            border-radius: 4px;
-            margin-right: 10px;
-            cursor: pointer;
-            font-size: 13px;
-            color: #333333;
-        }
+      .file-upload-wrapper input[type="file"]::file-selector-button {
+        background-color: #efefef;
+        border: 1px solid #cccccc;
+        padding: 6px 12px;
+        border-radius: 4px;
+        margin-right: 10px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #333333;
+      }
 
-        .file-upload-wrapper input[type="file"]::file-selector-button:hover {
-            background-color: #e5e5e5;
-        }
+      .file-upload-wrapper input[type="file"]::file-selector-button:hover {
+        background-color: #e5e5e5;
+      }
 
-        /* Botão de Ação Laranja */
-        .btn-submit {
-            width: 100%;
-            background-color: #dc9700; /* Tom de laranja/ouro da imagem */
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
+      .btn-submit {
+        width: 100%;
+        background-color: #dc9700;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
 
-        .btn-submit:hover {
-            background-color: #c48600;
-        }
+      .btn-submit:hover {
+        background-color: #c48600;
+      }
+
+      .btn-submit:disabled {
+        background-color: #e0c27a;
+        cursor: wait;
+      }
+
+      .alert-error {
+        background-color: #fef2f2;
+        border: 1px solid #ef4444;
+        border-radius: 6px;
+        color: #dc2626;
+        font-size: 14px;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="container">
-        <!-- Título da Seção -->
-        <h1 class="page-title">Assinar PDF</h1>
+      <!-- Título da Seção -->
+      <h1 class="page-title">Assinar PDF</h1>
 
-        <!-- Card do Formulário -->
-        <div class="card">
-            <p class="helper-text">
-                Atalho para assinar um PDF rapidamente: o documento será criado na sua conta com você como único assinante.
-            </p>
+      <!-- Card do Formulário -->
+      <div class="card">
+        <p class="helper-text">
+          Atalho para assinar um PDF rapidamente: o documento será criado na sua
+          conta com você como único assinante.
+        </p>
 
-            <form action="#" method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label class="form-label" for="pdf-file">Arquivo PDF:</label>
-                    <div class="file-upload-wrapper">
-                        <input type="file" id="pdf-file" name="pdf-file" accept=".pdf" required>
-                    </div>
-                </div>
+        <div
+          class="alert-error"
+          id="erro"
+          th:text="${erro}"
+          th:hidden="${erro == null}"
+        ></div>
 
-                <button type="submit" class="btn-submit">Assinar</button>
-            </form>
-        </div>
+        <!-- th:action faz o Thymeleaf incluir o token CSRF exigido pelo Spring Security -->
+        <form
+          id="form-envio"
+          th:action="@{/sign-pdf}"
+          method="POST"
+          enctype="multipart/form-data"
+          th:attr="data-tamanho-maximo=${tamanhoMaximoBytes},data-tamanho-maximo-mb=${tamanhoMaximoMb}"
+        >
+          <div class="form-group">
+            <label class="form-label" for="pdf-file">Arquivo PDF:</label>
+            <div class="file-upload-wrapper">
+              <input
+                type="file"
+                id="pdf-file"
+                name="pdf-file"
+                accept="application/pdf,.pdf"
+                required
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">Assinar</button>
+        </form>
+      </div>
     </div>
 
-</body>
+    <script>
+      // Validação antecipada; o servidor valida tudo novamente.
+      (function () {
+        const form = document.getElementById("form-envio");
+        const campo = document.getElementById("pdf-file");
+        const erro = document.getElementById("erro");
+        const tamanhoMaximo = Number(form.dataset.tamanhoMaximo);
+
+        function mostrarErro(mensagem) {
+          erro.textContent = mensagem;
+          erro.hidden = false;
+        }
+
+        form.addEventListener("submit", function (evento) {
+          const arquivo = campo.files[0];
+          if (!arquivo) {
+            return;
+          }
+          const ehPdf =
+            arquivo.type === "application/pdf" || /\.pdf$/i.test(arquivo.name);
+          if (!ehPdf) {
+            evento.preventDefault();
+            mostrarErro("Selecione um arquivo PDF.");
+          } else if (arquivo.size > tamanhoMaximo) {
+            evento.preventDefault();
+            mostrarErro(
+              "O arquivo excede o tamanho máximo de " +
+                form.dataset.tamanhoMaximoMb +
+                " MB.",
+            );
+          } else {
+            form.querySelector('button[type="submit"]').disabled = true;
+          }
+        });
+      })();
+    </script>
+  </body>
 </html>

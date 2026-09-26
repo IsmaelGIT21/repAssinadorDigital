@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Erro</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #fcfbfa;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+      }
+
+      .page-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #000000;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background-color: #ffffff;
+        border: 1px solid #f2f0eb;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      }
+
+      .mensagem {
+        font-size: 15px;
+        color: #505050;
+        line-height: 1.5;
+        margin-bottom: 25px;
+      }
+
+      .btn {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background-color: #dc9700;
+        color: #ffffff;
+        border-radius: 6px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .btn:hover {
+        background-color: #c48600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="page-title">Não foi possível concluir a operação</h1>
+      <div class="card">
+        <p class="mensagem" th:switch="${status}">
+          <span th:case="403"
+            >Acesso negado ou sessão expirada. Recarregue a página e tente
+            novamente.</span
+          >
+          <span th:case="404"
+            >A página ou o documento solicitado não foi encontrado.</span
+          >
+          <span th:case="400"
+            >A requisição enviada é inválida. Verifique os dados e tente
+            novamente.</span
+          >
+          <span th:case="*"
+            >Ocorreu um erro inesperado. Tente novamente em instantes.</span
+          >
+        </p>
+        <a class="btn" th:href="@{/sign-pdf}">Voltar para Assinar PDF</a>
+      </div>
+    </div>
+  </body>
+</html>
