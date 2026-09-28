@@ -113,6 +113,19 @@ class PdfControllerTest {
     }
 
     @Test
+    void telaDeAssinaturaEntregaPaginasEEnderecoDasImagensParaOScript() throws Exception {
+        when(pdfService.buscar("abc123", USUARIO)).thenReturn(pdf("abc123", false));
+        when(pdfService.previaEtiqueta(SIGNATARIO)).thenReturn(
+                new ConteudoEtiqueta(SIGNATARIO, "26/09/2026 15:43:59", ""));
+
+        mvc.perform(autenticado(get("/documents/abc123/sign")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "const PAGINAS = [{\"largura\":595.0,\"altura\":842.0},{\"largura\":842.0,\"altura\":595.0}];")))
+                .andExpect(content().string(containsString("const URL_PAGINAS = \"\\/documents\\/abc123\\/pages\";")));
+    }
+
+    @Test
     void documentoAssinadoExibeUmaMensagemComDataEOfereceDownload() throws Exception {
         Pdf assinado = pdf("abc123", true);
         when(pdfService.buscar("abc123", USUARIO)).thenReturn(assinado);

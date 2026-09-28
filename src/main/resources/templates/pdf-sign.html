@@ -328,12 +328,12 @@
 
     <script th:inline="javascript">
       (function () {
-        const PAGINAS = [];
-        const PAGINA_INICIAL = null;
-        const URL_PAGINAS = "";
-        const VERSAO = 0;
-        const LARGURA_ETIQUETA = 240;
-        const ALTURA_ETIQUETA = 72;
+        const PAGINAS = /*[[${pdf.paginas}]]*/ [];
+        const PAGINA_INICIAL = /*[[${pagina}]]*/ null;
+        const URL_PAGINAS = /*[[@{/documents/{id}/pages(id=${pdf.id})}]]*/ "";
+        const VERSAO = /*[[${pdf.versao}]]*/ 0;
+        const LARGURA_ETIQUETA = /*[[${etiquetaLargura}]]*/ 240;
+        const ALTURA_ETIQUETA = /*[[${etiquetaAltura}]]*/ 72;
         const MARGEM_INICIAL = 40;
 
         const imagem = document.getElementById("imagem-pagina");
