@@ -31,8 +31,13 @@ public class SecurityConfig {
 
     @Bean
     UserDetailsService usuarios(PasswordEncoder codificadorSenha,
-            @Value("${app.usuario-teste.email:usuario@teste.com}") String email,
-            @Value("${app.usuario-teste.senha:12345678}") String senha) {
+            @Value("${app.usuario-teste.email:}") String email,
+            @Value("${app.usuario-teste.senha:}") String senha) {
+
+        if (email.isBlank() || senha.isBlank()) {
+            throw new IllegalStateException(
+                    "Defina APP_TEST_USER_EMAIL e APP_TEST_USER_PASSWORD no .env (veja .env.example).");
+        }
         return new InMemoryUserDetailsManager(User.withUsername(email)
                 .password(codificadorSenha.encode(senha))
                 .roles("USER")

@@ -65,3 +65,7 @@ secrets/
 *.p12
 *.pfx
 *.jks
+*.keystore
+*.key
+*.pem
+!src/main/resources/ssl/letsencrypt-e7.pem

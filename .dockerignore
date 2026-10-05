@@ -10,3 +10,5 @@ secrets/
 *.p12
 *.pfx
 *.jks
+*.keystore
+*.key

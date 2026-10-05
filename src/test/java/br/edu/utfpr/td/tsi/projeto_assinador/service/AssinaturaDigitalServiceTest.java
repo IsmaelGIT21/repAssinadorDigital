@@ -29,8 +29,14 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -59,27 +65,8 @@ class AssinaturaDigitalServiceTest {
     private AssinaturaDigitalService servico;
 
     @BeforeEach
-    void criarCertificado() throws Exception {
-        KeyPairGenerator gerador = KeyPairGenerator.getInstance("RSA");
-        gerador.initialize(2048);
-        KeyPair chaves = gerador.generateKeyPair();
-
-        X500Name nome = new X500Name("CN=Autoridade de Teste");
-        Instant agora = Instant.now();
-        certificado = new JcaX509CertificateConverter().getCertificate(new JcaX509v3CertificateBuilder(
-                nome, BigInteger.ONE, Date.from(agora.minus(Duration.ofDays(1))),
-                Date.from(agora.plus(Duration.ofDays(1))), nome, chaves.getPublic())
-                .build(new JcaContentSignerBuilder("SHA256withRSA").build(chaves.getPrivate())));
-
-        KeyStore repositorio = KeyStore.getInstance("PKCS12");
-        repositorio.load(null, null);
-        repositorio.setKeyEntry("teste", chaves.getPrivate(), SENHA.toCharArray(), new Certificate[] { certificado });
-        Path arquivo = pasta.resolve("certificado.p12");
-        try (OutputStream saida = Files.newOutputStream(arquivo)) {
-            repositorio.store(saida, SENHA.toCharArray());
-        }
-
-        servico = new AssinaturaDigitalService(new EtiquetaAssinatura(), arquivo.toString(), SENHA, "BR");
+    void criarCertificadoFinal() throws Exception {
+        servico = criarServico(false);
     }
 
     @Test
@@ -126,9 +113,69 @@ class AssinaturaDigitalServiceTest {
         }
     }
 
-    private void assertCmsValido(PDSignature assinatura, byte[] pdf) throws Exception {
-        CMSSignedData cms = new CMSSignedData(new CMSProcessableByteArray(assinatura.getSignedContent(pdf)),
+    @Test
+    void autoridadeCertificadoraEmiteCertificadoProprioParaOSignatario() throws Exception {
+        AssinaturaDigitalService servicoComAc = criarServico(true);
+
+        byte[] assinado = servicoComAc.assinar(pdfComDuasPaginas(0, 0), new PosicaoEtiqueta(1, 0.1, 0.1, 0.3, 0.1),
+                CONTEUDO, new GregorianCalendar());
+
+        try (PDDocument documento = PDDocument.load(assinado)) {
+            PDSignature assinatura = documento.getSignatureDictionaries().get(0);
+            CMSSignedData cms = cmsDe(assinatura, assinado);
+            SignerInformation assinante = cms.getSignerInfos().getSigners().iterator().next();
+            X509CertificateHolder certificadoAssinante = (X509CertificateHolder) cms.getCertificates()
+                    .getMatches(assinante.getSID()).iterator().next();
+
+            assertEquals(new X500Name("CN=Maria da Silva – Ω"), certificadoAssinante.getSubject());
+            assertEquals(new JcaX509CertificateHolder(certificado).getSubject(), certificadoAssinante.getIssuer());
+            assertFalse(BasicConstraints.fromExtensions(certificadoAssinante.getExtensions()).isCA());
+            assertTrue(KeyUsage.fromExtensions(certificadoAssinante.getExtensions()).hasUsages(KeyUsage.digitalSignature));
+            assertTrue(certificadoAssinante.getExtension(Extension.subjectAlternativeName) != null);
+            assertEquals(2, cms.getCertificates().getMatches(null).size());
+
+            X509Certificate emitido = new JcaX509CertificateConverter().getCertificate(certificadoAssinante);
+            emitido.verify(certificado.getPublicKey());
+            assertTrue(assinante.verify(new JcaSimpleSignerInfoVerifierBuilder().build(emitido)));
+        }
+    }
+
+    private AssinaturaDigitalService criarServico(boolean autoridade) throws Exception {
+        KeyPairGenerator gerador = KeyPairGenerator.getInstance("RSA");
+        gerador.initialize(2048);
+        KeyPair chaves = gerador.generateKeyPair();
+
+        X500Name nome = new X500Name("CN=Autoridade de Teste");
+        Instant agora = Instant.now();
+        JcaX509v3CertificateBuilder construtor = new JcaX509v3CertificateBuilder(
+                nome, BigInteger.ONE, Date.from(agora.minus(Duration.ofDays(1))),
+                Date.from(agora.plus(Duration.ofDays(1))), nome, chaves.getPublic());
+        if (autoridade) {
+            construtor.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+            construtor.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign));
+        }
+        certificado = new JcaX509CertificateConverter().getCertificate(
+                construtor.build(new JcaContentSignerBuilder("SHA256withRSA").build(chaves.getPrivate())));
+
+        KeyStore repositorio = KeyStore.getInstance("PKCS12");
+        repositorio.load(null, null);
+        repositorio.setKeyEntry("teste", chaves.getPrivate(), SENHA.toCharArray(), new Certificate[] { certificado });
+        Path arquivo = pasta.resolve(autoridade ? "ac.p12" : "certificado.p12");
+        try (OutputStream saida = Files.newOutputStream(arquivo)) {
+            repositorio.store(saida, SENHA.toCharArray());
+        }
+
+        return new AssinaturaDigitalService(new EtiquetaAssinatura(),
+                new EmissorCertificado(arquivo.toString(), SENHA, 1440), new CarimboTempo(""), "BR");
+    }
+
+    private static CMSSignedData cmsDe(PDSignature assinatura, byte[] pdf) throws IOException, CMSException {
+        return new CMSSignedData(new CMSProcessableByteArray(assinatura.getSignedContent(pdf)),
                 assinatura.getContents(pdf));
+    }
+
+    private void assertCmsValido(PDSignature assinatura, byte[] pdf) throws Exception {
+        CMSSignedData cms = cmsDe(assinatura, pdf);
         SignerInformation assinante = cms.getSignerInfos().getSigners().iterator().next();
         assertTrue(assinante.verify(new JcaSimpleSignerInfoVerifierBuilder().build(certificado)));
     }
