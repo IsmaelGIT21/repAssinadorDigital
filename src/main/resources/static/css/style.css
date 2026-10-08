@@ -3,6 +3,51 @@
    Reusable CSS classes for Tailwind CDN projects
    ============================================ */
 
+:root {
+  --papel: #fcfbfa;
+  --superficie: #ffffff;
+  --tinta: #1a1a1a;
+  --texto: #333333;
+  --texto-claro: #bbbbbb;
+  --texto-desativado: #a0a0a0;
+  --linha: #f2f0eb;
+  --linha-escura: #2d2d2d;
+  --linha-input: #cccccc;
+  --amarelo: #dc9700;
+  --amarelo-hover: #c48600;
+  --erro: #dc2626;
+  --fundo-arquivo: #fafafa;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+
+body.com-sidebar { background-color: var(--papel); color: var(--texto); min-height: 100vh; display: flex; }
+
+/* --- Sidebar --- */
+.sidebar { width: 240px; background-color: var(--tinta); color: var(--superficie); position: fixed; top: 0; bottom: 0; left: 0; display: flex; flex-direction: column; z-index: 120; transition: transform 0.25s ease-in-out; }
+.sidebar-header { padding: 24px 20px; text-align: center; border-bottom: 1px solid var(--linha-escura); }
+.sidebar-logo { background: var(--superficie); border-radius: 8px; padding: 8px 12px; display: inline-block; margin-bottom: 10px; }
+.sidebar-logo img { height: 32px; display: block; }
+.sidebar-title { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--amarelo); text-transform: uppercase; display: block; }
+.sidebar-nav { flex: 1; padding: 16px 0; }
+.sidebar-nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: var(--texto-claro); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+.sidebar-nav-item:hover { background-color: var(--linha-escura); color: var(--superficie); text-decoration: none; }
+.sidebar-nav-item.ativo { background-color: var(--linha-escura); color: var(--superficie); border-left-color: var(--amarelo); }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--linha-escura); display: flex; align-items: center; justify-content: space-between; }
+.sidebar-footer .user-name { font-size: 13px; font-weight: 600; color: var(--superficie); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-footer .btn-sair { background: none; border: none; color: #888888; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; padding: 0; }
+.sidebar-footer .btn-sair:hover { color: var(--erro); }
+.btn-burger { display: none; position: fixed; top: 14px; left: 14px; z-index: 140; background-color: var(--tinta); color: var(--superficie); border: 1px solid var(--linha-escura); border-radius: 6px; width: 40px; height: 40px; font-size: 22px; line-height: 1; cursor: pointer; align-items: center; justify-content: center; }
+.sidebar-backdrop { display: none; position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.55); z-index: 110; }
+
+/* --- Estrutura central --- */
+.conteudo { flex: 1; margin-left: 240px; padding: 40px 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
+.container-app { width: 100%; max-width: 600px; }
+.container-app-largo { width: 100%; max-width: 820px; }
+.page-title { font-size: 24px; font-weight: 700; color: #000000; margin-bottom: 20px; text-align: left; }
+.card-app { background-color: var(--superficie); border: 1px solid var(--linha); border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); }
+.helper-text { font-size: 14px; color: var(--texto-desativado); line-height: 1.5; margin-bottom: 25px; }
+
 /* --- Buttons --- */
 .btn {
     display: inline-flex;
@@ -42,7 +87,18 @@
 .btn-lg { padding: 0.75rem 1.5rem; font-size: 1rem; }
 .btn-full { width: 100%; }
 
+.btn-submit { width: 100%; background-color: var(--amarelo); color: var(--superficie); border: none; border-radius: 6px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; }
+.btn-submit:hover { background-color: var(--amarelo-hover); }
+.btn-submit:disabled { background-color: #e0c27a; cursor: wait; }
+
 /* --- Form Elements --- */
+.form-group { margin-bottom: 25px; }
+.form-label { display: block; font-size: 14px; font-weight: 600; color: #505050; margin-bottom: 10px; }
+.file-upload-wrapper { border: 1px dashed var(--linha-input); border-radius: 6px; padding: 15px; display: flex; align-items: center; background-color: var(--fundo-arquivo); }
+.file-upload-wrapper input[type="file"] { font-size: 14px; color: #505050; width: 100%; cursor: pointer; }
+.file-upload-wrapper input[type="file"]::file-selector-button { background-color: #efefef; border: 1px solid var(--linha-input); padding: 6px 12px; border-radius: 4px; margin-right: 10px; cursor: pointer; font-size: 13px; color: var(--texto); }
+.file-upload-wrapper input[type="file"]::file-selector-button:hover { background-color: #e5e5e5; }
+
 .form-input {
     width: 100%;
     padding: 0.625rem 0.875rem;
@@ -229,9 +285,17 @@ tr:last-child .td-cell { border-bottom: none; }
 .modal-content { background: white; margin: auto; border-radius: 0.75rem; box-shadow: 0 25px 50px rgba(0,0,0,0.15); width: 90%; max-width: 460px; animation: modalSlideIn 0.3s ease-out; overflow: hidden; }
 @keyframes modalSlideIn { from { transform: translateY(-30px) scale(0.97); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
 
+/* --- Área central do conteudo --- */
+.conteudo { flex: 1; margin-left: 240px; padding: 40px 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
     .info-item { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+    .btn-burger { display: flex; }
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.aberta { transform: translate(0); }
+    .sidebar.visivel { display: block; }
+    .conteudo { margin-left: 0; padding: 70px 16px 30px; }
 }
 
 /* --- Validation Result (validator page) --- */

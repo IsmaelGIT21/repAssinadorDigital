@@ -115,6 +115,11 @@ public class PdfController {
                         ContentDisposition.attachment().filename(nome, StandardCharsets.UTF_8).build().toString())
                 .body(pdfService.conteudoAtual(pdf));
     }
+    
+    @GetMapping("/sign-validate")
+    public String telaValidacao() {
+        return "sign-validate";
+    }
 
     private static Signatario signatario(Principal usuario) {
         String login = usuario.getName();

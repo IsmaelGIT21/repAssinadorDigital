@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Validar Assinatura</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+  </head>
+  <body class="com-sidebar">
+    <button class="btn-burger" id="btnMenu" type="button" aria-label="Abrir menu">☰</button>
+    <div class="sidebar-backdrop" id="backdrop"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img th:src="@{/images/utfpr_logo.png}" src="/images/utfpr_logo.png" alt="UTFPR" />
+        </div>
+        <span class="sidebar-title">Assinador Digital</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a th:href="@{/sign-pdf}" href="/sign-pdf" class="sidebar-nav-item">Assinar PDF</a>
+        <a th:href="@{/sign-validate}" href="/sign-validate" class="sidebar-nav-item ativo">Validar Assinatura</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="user-name" th:text="${#authentication != null ? #authentication.name : 'Usuário'}"></span>
+        <form th:action="@{/logout}" method="post" style="display: inline; margin: 0;">
+          <button type="submit" class="btn-sair">Sair</button>
+        </form>
+      </div>
+    </aside>
+
+    <main class="conteudo">
+      <div class="container-app">
+        <h1 class="page-title">Validador de Assinaturas PDF</h1>
+
+        <div class="card-app">
+          <p class="helper-text">
+            Selecione o PDF para validar a autenticidade e a integridade das assinaturas digitais emitidas.
+          </p>
+          <form id="form-validar" th:action="@{/sign-validate}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+              <label class="form-label" for="pdf-file">Selecione o PDF:</label>
+              <div class="file-upload-wrapper">
+                <input
+                  type="file"
+                  id="pdf-file"
+                  name="pdf-file"
+                  accept="application/pdf,.pdf"
+                  required
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn-submit">Verificar Assinatura</button>
+          </form>      
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        const btnMenu = document.getElementById("btnMenu");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        function alternarMenu() {
+          sidebar.classList.toggle("aberta");
+          backdrop.classList.toggle("visivel");
+        }
+
+        btnMenu.addEventListener("click", alternarMenu);
+        backdrop.addEventListener("click", alternarMenu);
+      })();
+    </script>
+  </body>
+</html>

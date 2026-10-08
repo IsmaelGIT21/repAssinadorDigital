@@ -4,133 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assinar PDF</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
 
-      body {
-        background-color: #fcfbfa;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 40px 20px;
-      }
-
-      .container {
-        width: 100%;
-        max-width: 600px;
-      }
-
-      .page-title {
-        font-size: 24px;
-        font-weight: 700;
-        color: #000000;
-        margin-bottom: 20px;
-        text-align: left;
-      }
-
-      .card {
-        background-color: #ffffff;
-        border: 1px solid #f2f0eb;
-        border-radius: 12px;
-        padding: 30px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-      }
-
-      .helper-text {
-        font-size: 14px;
-        color: #a0a0a0;
-        line-height: 1.5;
-        margin-bottom: 25px;
-      }
-
-      .form-group {
-        margin-bottom: 25px;
-      }
-
-      .form-label {
-        display: block;
-        font-size: 14px;
-        font-weight: 600;
-        color: #505050;
-        margin-bottom: 10px;
-      }
-
-      .file-upload-wrapper {
-        border: 1px dashed #cccccc;
-        border-radius: 6px;
-        padding: 15px;
-        display: flex;
-        align-items: center;
-        background-color: #fafafa;
-      }
-
-      .file-upload-wrapper input[type="file"] {
-        font-size: 14px;
-        color: #505050;
-        width: 100%;
-        cursor: pointer;
-      }
-
-      .file-upload-wrapper input[type="file"]::file-selector-button {
-        background-color: #efefef;
-        border: 1px solid #cccccc;
-        padding: 6px 12px;
-        border-radius: 4px;
-        margin-right: 10px;
-        cursor: pointer;
-        font-size: 13px;
-        color: #333333;
-      }
-
-      .file-upload-wrapper input[type="file"]::file-selector-button:hover {
-        background-color: #e5e5e5;
-      }
-
-      .btn-submit {
-        width: 100%;
-        background-color: #dc9700;
-        color: #ffffff;
-        border: none;
-        border-radius: 6px;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-      }
-
-      .btn-submit:hover {
-        background-color: #c48600;
-      }
-
-      .btn-submit:disabled {
-        background-color: #e0c27a;
-        cursor: wait;
-      }
-
-      .alert-error {
-        background-color: #fef2f2;
-        border: 1px solid #ef4444;
-        border-radius: 6px;
-        color: #dc2626;
-        font-size: 14px;
-        padding: 12px 15px;
-        margin-bottom: 20px;
-      }
-    </style>
   </head>
-  <body>
-    <div class="container">
-      <!-- Título da Seção -->
+  <body class="com-sidebar">
+  	<button class="btn-burger" id="btnMenu" type="button" aria-label="Abrir menu">☰</button>
+    <div class="sidebar-backdrop" id="backdrop"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img th:src="@{/images/utfpr_logo.png}" src="/images/utfpr_logo.png" alt="UTFPR" />
+        </div>
+        <span class="sidebar-title">Assinador Digital</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a th:href="@{/sign-pdf}" href="/sign-pdf" class="sidebar-nav-item ativo">Assinar PDF</a>
+        <a th:href="@{/sign-validate}" href="/sign-validate" class="sidebar-nav-item">Validar Assinatura</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="user-name" th:text="${#authentication != null ? #authentication.name : 'Usuário'}"></span>
+        <form th:action="@{/logout}" method="post" style="display: inline; margin: 0;">
+          <button type="submit" class="btn-sair">Sair</button>
+        </form>
+      </div>
+    </aside>
+    
+    <main class="conteudo">
+      <div class="container-app">
+    	<!-- Título da Seção -->
       <h1 class="page-title">Assinar PDF</h1>
 
       <!-- Card do Formulário -->
-      <div class="card">
+      <div class="card-app">
         <p class="helper-text">
           Atalho para assinar um PDF rapidamente: o documento será criado na sua
           conta com você como único assinante.
@@ -168,8 +75,22 @@
         </form>
       </div>
     </div>
+    </main>
 
     <script>
+    (function () {
+        const btnMenu = document.getElementById("btnMenu");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        function alternarMenu() {
+          sidebar.classList.toggle("aberta");
+          backdrop.classList.toggle("visivel");
+        }
+
+        btnMenu.addEventListener("click", alternarMenu);
+        backdrop.addEventListener("click", alternarMenu);
+      })();
       // Validação antecipada; o servidor valida tudo novamente.
       (function () {
         const form = document.getElementById("form-envio");
